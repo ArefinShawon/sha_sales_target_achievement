@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sales_target,sales_target,model_sales_target,base.group_user,1,1,1,1
 access_target_setup,target_setup,model_target_setup,base.group_user,1,1,1,1
+access_import_target_set_wizard,import_target_set_wizard,model_import_target_set_wizard,base.group_user,1,1,1,1

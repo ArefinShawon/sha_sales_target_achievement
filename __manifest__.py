@@ -10,6 +10,7 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequence.xml',
+        'wizard/sales_target_import_wizard_view.xml',
         'views/sales_target_view.xml',
         'views/target_setup_view.xml',
         'views/menuitems.xml',

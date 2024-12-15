@@ -47,15 +47,15 @@
                             <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
                             <field name="company" options='{"no_open": True,}' readonly="1"/>
                             <field name="sub_business" options='{"no_open": True, "no_create": True}'/>
+                        </group>
+                        <group>
                             <field name="start_date"/>
                             <!--                            attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
                             <field name="end_date"/>
                             <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
-                        </group>
-                        <group>
                             <field name="target_point"/>
                             <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
-                            <field name="target_unit"/>
+                            <field name="target_unit" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -64,6 +64,7 @@
                                 <tree editable="bottom">
                                     <field name="name" string="ID"/>
                                     <field name="salesperson_id" options='{"no_create": True}'/>
+                                    <field name="manager_id" options='{"no_create": True}'/>
                                     <field name="start_date"/>
                                     <field name="end_date"/>
                                     <!--                                    <field name="manager"/>-->

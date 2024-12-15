@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="import_target_set_wizard_form">
+            <field name="name">import.target.set.wizard.form</field>
+            <field name="model">import.target.set.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="import_file"/>
+                            <field name="sale_target_id" invisible="1"/>
+                        </group>
+                        <group>
+                        </group>
+                    </group>
+                    <footer>
+                        <button type="object" name="import_stl_xlsx_file" string="Upload" class="oe_highlight"
+                                icon="fa-upload"/>
+                        <button special="cancel" string="Cancel" class="btn-danger" icon="fa-close"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

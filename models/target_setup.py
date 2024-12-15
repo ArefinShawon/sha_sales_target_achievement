@@ -68,7 +68,8 @@ class TargetSetup(models.Model):
             'valign': 'vcenter',
             'font_size': 10
         })
-        headers = ['STL ID', 'company', 'Business', 'Target Code', 'Geo ID', 'Geo Name', 'Salesperson', 'Manager', 'Start Date',
+        headers = ['Target ID', 'Company', 'Business', 'Target Setup Code', 'Geo ID', 'Geo Name', 'Salesperson',
+                   'Manager', 'Start Date',
                    'End Date', 'Target Unit', 'Target Point', 'Target Amount']
         col_widths = [len(header) for header in headers]
         for col_num, header in enumerate(headers):
@@ -79,6 +80,11 @@ class TargetSetup(models.Model):
                 line.name or '',
                 line.company.name or '',
                 line.sub_business.name or '',
+                line.target_setup_id.name or '',
+                line.geo_id.upazila_code or '',
+                line.geo_id.upazila_name or '',
+                line.salesperson_id.name or '',
+                line.manager_id.name or '',
                 self.start_date.strftime('%Y-%m-%d') if self.start_date else '',
                 self.end_date.strftime('%Y-%m-%d') if self.end_date else '',
                 dict(self._fields['target_unit'].selection).get(self.target_unit, ''),
@@ -109,12 +115,11 @@ class TargetSetup(models.Model):
         }
 
     def action_target_import(self):
-        print("Imported")
-        # return {
-        #     "type": "ir.actions.act_window",
-        #     "name": "Import Sales Target Lines",
-        #     "res_model": "import.sales.target.line.wizard",
-        #     "view_mode": "form",
-        #     "target": "new",
-        #     "context": {"default_sale_target_id": self.id},
-        # }
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Import Sales Target Lines",
+            "res_model": "import.target.set.wizard",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_sale_target_id": self.id},
+        }
