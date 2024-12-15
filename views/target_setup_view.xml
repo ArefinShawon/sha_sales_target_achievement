@@ -27,6 +27,16 @@
         <field name="arch" type="xml">
             <form string="Sales Target Set">
                 <header>
+                    <button name="action_target_confirm" type="object" string="Confirm" class="btn-primary"
+                            icon="fa-paper-plane" confirm="Are You Sure You Want To Submit This Target?"
+                            attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
+                    <button name="action_target_approve" type="object" string="Approve" class="btn-success"
+                            icon="fa-check"
+                            confirm="Are You Sure You Want To Approve This Target? Once Approved Targets Cannot Be Altered Or Cancelled"
+                            attrs="{'invisible': [('state', 'not in', ['confirm'])]}"/>
+                    <button name="action_target_cancel" type="object" string="Cancel" class="btn-danger"
+                            icon="fa-close" confirm="Once Cancelled You Cannot Revert Back The Target!!!"
+                            attrs="{'invisible': [('state', 'not in', ['draft', 'confirm'])]}"/>
 
                     <button name="action_target_export" type="object" string="Export" class="btn-success"
                             help="Export sales target line. It will not have the target amount"
@@ -34,6 +44,7 @@
                     <button name="action_target_import" type="object" string="Upload" class="btn-info"
                             help="Import sales target line. Update the target lines and import here"
                             icon="fa-upload" attrs="{'invisible': [('state', 'not in', ['draft', 'confirm'])]}"/>
+                    <!--                    <field name="state"/>-->
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -42,39 +53,38 @@
                     </h2>
                     <group>
                         <group>
-                            <field name="sales_target_name"/>
-                            <!--                            <field name="business" options='{"no_open": True, "no_create": True}'/>-->
-                            <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
+                            <field name="sales_target_name"
+                                   attrs="{'readonly': [('state', 'in', ['open', 'close', 'cancel'])]}"/>
                             <field name="company" options='{"no_open": True,}' readonly="1"/>
-                            <field name="sub_business" options='{"no_open": True, "no_create": True}'/>
+                            <field name="sub_business" options='{"no_open": True, "no_create": True}'
+                                   attrs="{'readonly': [('state', 'in', ['confirm', 'open', 'close', 'cancel'])]}"/>
                         </group>
                         <group>
-                            <field name="start_date"/>
-                            <!--                            attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
-                            <field name="end_date"/>
-                            <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
+                            <field name="start_date" widget="daterange" string="Start Date" class="oe_inline"
+                                   options="{'related_end_date': 'end_date'}"
+                                   attrs="{'readonly': [('state', 'in', ['open', 'close', 'cancel'])]}"/>
+                            <field name="end_date" widget="daterange" string="End Date" class="oe_inline"
+                                   options="{'related_start_date': 'start_date'}"
+                                   attrs="{'readonly': [('state', 'in', ['open', 'close', 'cancel'])]}"/>
                             <field name="target_point"/>
-                            <!--                                   attrs="{'readonly': [('state', 'in', ['open', 'close'])]}"/>-->
                             <field name="target_unit" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Target Set">
-                            <field name="sales_target_ids">
+                            <field name="sales_target_ids"
+                                   attrs="{'readonly': [('state', 'in', ['open', 'close', 'cancel'])]}">
                                 <tree editable="bottom">
                                     <field name="name" string="ID"/>
-                                    <field name="salesperson_id" options='{"no_create": True}'/>
+                                    <field name="salesperson_id" options='{"no_create": True}'
+                                           widget="many2one_avatar_user"/>
                                     <field name="manager_id" options='{"no_create": True}'/>
                                     <field name="start_date"/>
                                     <field name="end_date"/>
-                                    <!--                                    <field name="manager"/>-->
                                     <field name="geo_id"/>
-                                    <!--                                    <field name="target_point" invisible="1"/>-->
-                                    <!--                                    <field name="target_unit" invisible="1"/>-->
                                     <field name="target_amount"/>
                                     <field name="total_sales"/>
                                     <field name="difference_amount"/>
-                                    <field name="state" invisible="1"/>
                                     <field name="achievement_state"
                                            decoration-warning="achievement_state=='progress'"
                                            decoration-danger="achievement_state=='failed'"

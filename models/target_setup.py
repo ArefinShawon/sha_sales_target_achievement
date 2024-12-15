@@ -1,7 +1,5 @@
 import base64
 import io
-from email.policy import default
-
 import xlsxwriter
 
 from odoo import fields, models, api, _
@@ -12,7 +10,6 @@ class TargetSetup(models.Model):
     _name = 'target.setup'
     _description = 'Set Sales Target for Sales Person'
     _inherit = ['mail.thread', 'mail.activity.mixin']
-    # _rec_name = 'name'
     _order = 'create_date desc'
 
     name = fields.Char(string="Name", readonly=True, default=lambda self: _("Draft"))
@@ -27,12 +24,12 @@ class TargetSetup(models.Model):
     target_unit = fields.Selection(
         [('value', 'Total Amount'), ('product_value', 'Product Wise Amount'), ('qty', 'Product Wise Quantity')],
         required=True, string="Target Unit", default='value')
-    sales_target_ids = fields.One2many('sales.target', 'target_setup_id')
+    sales_target_ids = fields.One2many('sales.target', 'target_setup_id', string="Sales Target IDs")
     target_point = fields.Selection(
         [('so_confirm', 'On Sale Order Confirmed'),
          ('invoice_valid', 'On Invoice Validation'),
          ('invoice_paid', 'On Invoice Paid')],
-        string="Target Point", tracking=True, required=True, default='so_confirm')
+        string="Target Point", tracking=True, required=True, default='so_confirm', readonly=True)
     state = fields.Selection(
         [('draft', 'Draft'), ('confirm', 'Confirm'), ('open', 'Open'), ('close', 'Lock'), ('cancel', 'Cancel')],
         default='draft', string="State", tracking=True)
@@ -44,11 +41,40 @@ class TargetSetup(models.Model):
             record.name = self.env['ir.sequence'].next_by_code('target.setup')
         return records
 
-    @api.constrains('start_date', 'end_date')
-    def _check_dates(self):
-        if self.start_date and self.end_date:
-            if self.start_date > self.end_date:
-                raise UserError("Start date cannot be after end date")
+    def action_target_confirm(self):
+        if self.state == 'draft':
+            self.state = 'confirm'
+
+    def action_target_approve(self):
+        if self.state == 'confirm':
+            self.state = 'open'
+
+    def action_target_cancel(self):
+        if self.state in ['draft', 'confirm']:
+            self.state = 'cancel'
+
+    @api.onchange('sub_business')
+    def _onchange_business(self):
+        if not self.sub_business:
+            self.sales_target_ids = False
+        employees = self.env['hr.employee'].search([
+            ('company_id', '=', self.company.id),
+            ('business', '=', self.sub_business.id)
+        ])
+        self.sales_target_ids = False
+        sales_targets = []
+        for employee in employees:
+            sales_targets.append((0, 0, {'salesperson_id': employee.user_id.id, }))
+        self.sales_target_ids = sales_targets
+
+    def close_expired_targets(self):
+        current_date = fields.Date.today()
+        expired_targets = self.search([
+            ('state', '!=', 'close'),
+            ('end_date', '<', current_date)
+        ])
+        for target in expired_targets:
+            target.state = 'close'
 
     def action_target_export(self):
         if not self.sales_target_ids:
