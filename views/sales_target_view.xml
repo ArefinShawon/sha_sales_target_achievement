@@ -1,0 +1,74 @@
+<odoo>
+    <record id="view_sales_target_tree" model="ir.ui.view">
+        <field name="name">sales.target.tree</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="target_name"/>
+                <field name="salesperson_id"/>
+                <field name="target_amount"/>
+                <field name="total_sales"/>
+                <field name="achievement_progress"/>
+                <field name="achievement_state"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_sales_target_form" model="ir.ui.view">
+        <field name="name">sales.target.form</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="achievement_state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <h2>
+                        <field name="name"/>
+                    </h2>
+                    <group>
+                        <group>
+                            <field name="target_name"/>
+                            <field name="salesperson_id" options='{"no_open": True, "no_create": True}'/>
+                            <field name="manager_id"/>
+                            <field name="company" options='{"no_open": True,}' readonly="1"/>
+                            <field name="sub_business" options='{"no_open": True, "no_create": True}'
+                                   widget="many2many_tags"/>
+                            <field name="geo_id" options='{"no_open": True}'/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="target_point"/>
+                            <field name="target_amount"/>
+                            <field name="total_sales" readonly="1"/>
+                            <field name="achievement_progress" readonly="1" widget="percentage"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sales Orders" attrs="{'invisible': [('target_point', '!=', 'so_confirm')]}">
+                            <field name="sale_order_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="partner_id"/>
+                                    <field name="amount_total"/>
+                                    <field name="date_order"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Invoice">
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

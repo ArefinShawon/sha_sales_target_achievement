@@ -1,0 +1,17 @@
+<odoo>
+    <record id="action_sales_target" model="ir.actions.act_window">
+        <field name="name">Sales Targets Progress</field>
+        <field name="res_model">sales.target</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_target_setup" model="ir.actions.act_window">
+        <field name="name">Target Set</field>
+        <field name="res_model">target.setup</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_sales_target_root" name="Sales Target" parent="sale.sale_menu_root" sequence="10"/>
+    <menuitem id="menu_target_setup" name="Target Set" parent="menu_sales_target_root" action="action_target_setup" sequence="10"/>
+    <menuitem id="menu_sales_target" name="Target Achievement" parent="menu_sales_target_root" action="action_sales_target" sequence="20"/>
+</odoo>
