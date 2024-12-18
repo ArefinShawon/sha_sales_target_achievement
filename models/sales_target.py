@@ -1,27 +1,27 @@
 from odoo import models, fields, api, _
-from odoo.fields import first
 
 
 class SalesTarget(models.Model):
     _name = 'sales.target'
     _description = 'Sales Target'
     _order = 'create_date desc'
+    _rec_name = 'target_name'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string="Code", readonly=True, default=lambda self: _("Draft"))
-    target_name = fields.Char(string='Target Name', related='target_setup_id.sales_target_name')
+    target_name = fields.Char(string='Target Name', related='target_setup_id.sales_target_name', store=True)
     salesperson_id = fields.Many2one('res.users', string="Salesperson", required=True)
-    manager_id = fields.Many2one('hr.employee', string="Manager", related='salesperson_id.employee_id.parent_id')
-    geo_id = fields.Many2one('area.upazila', string="Geo ID", related='salesperson_id.employee_id.upazila_name')
+    manager_id = fields.Many2one('hr.employee', string="Manager", related='salesperson_id.employee_id.parent_id',
+                                 store=True)
+    geo_id = fields.Many2one('area.upazila', string="Geo ID", related='salesperson_id.employee_id.upazila_name',
+                             store=True)
     company = fields.Many2one('res.company', string="Company", default=lambda self: self.env.company)
     sub_business = fields.Many2many('sub.business', string="Sub Business",
                                     related='salesperson_id.employee_id.business')
     target_amount = fields.Float(string='Target Amount', required=True)
-    start_date = fields.Date(string='Start Date', related='target_setup_id.start_date')
-    end_date = fields.Date(string='End Date', related='target_setup_id.end_date')
-    state = fields.Selection(
-        [('draft', 'Draft'), ('confirm', 'Confirm'), ('open', 'Open'), ('close', 'Lock'), ('cancel', 'Cancel')],
-        default='draft', string="State", related='target_setup_id.state')
+    start_date = fields.Date(string='Start Date', related='target_setup_id.start_date', store=True)
+    end_date = fields.Date(string='End Date', related='target_setup_id.end_date', store=True)
+    state = fields.Selection(related='target_setup_id.state', string="State")
     target_point = fields.Selection(
         [('so_confirm', 'On Sale Order Confirmed'),
          ('invoice_valid', 'On Invoice Validation'),

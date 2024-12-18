@@ -6,17 +6,19 @@
             <tree>
                 <field name="name"/>
                 <field name="target_name"/>
-                <field name="salesperson_id"/>
+                <field name="target_setup_id"/>
+                <field name="salesperson_id" widget="many2one_avatar_user"/>
                 <field name="manager_id" optional="show"/>
                 <field name="geo_id" optional="show"/>
                 <field name="company" optional="hide"/>
                 <field name="sub_business" optional="hide"/>
                 <field name="start_date"/>
+                <field name="end_date" optional="hide"/>
                 <field name="end_date" widget="remaining_days"/>
                 <field name="target_amount"/>
                 <field name="total_sales"/>
                 <field name="difference_amount" optional="show"/>
-                <field name="achievement_progress"/>
+                <field name="achievement_progress" widget="progressbar"/>
                 <field name="achievement_state"
                        decoration-warning="achievement_state=='progress'"
                        decoration-danger="achievement_state=='failed'"
@@ -41,6 +43,7 @@
                     <group>
                         <group>
                             <field name="target_name"/>
+                            <field name="target_setup_id" readonly="1"/>
                             <field name="salesperson_id" options='{"no_open": True, "no_create": True}'
                                    attrs="{'readonly': [('state', 'in', ['confirm', 'open', 'close', 'cancel'])]}"
                                    widget="many2one_avatar_user"/>
@@ -85,4 +88,76 @@
             </form>
         </field>
     </record>
+    <record id="view_sales_target_search" model="ir.ui.view">
+        <field name="name">sales.target.search</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="target_name"/>
+                <field name="salesperson_id"/>
+                <field name="manager_id"/>
+                <field name="geo_id"/>
+                <field name="target_amount"/>
+                <filter string="Own Achievement" name="own_targets" domain="[('salesperson_id', '=', uid)]"/>
+                <filter string="Team Achievement" name="team_targets" domain="[('manager_id.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="In Progress" name="achievement_state"
+                        domain="[('achievement_state', '=', 'progress')]"/>
+                <filter string="Completed" name="achievement_state" domain="[('achievement_state', '=', 'completed')]"/>
+                <filter string="Failed" name="achievement_state" domain="[('achievement_state', '=', 'failed')]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Target Name" name="target_name" context="{'group_by': 'target_name'}"/>
+                    <filter string="Sales Target ID" name="target_setup_id" context="{'group_by': 'target_setup_id'}"/>
+                    <filter string="Salesperson" name="salesperson_id" context="{'group_by': 'salesperson_id'}"/>
+                    <filter string="Achievement Status" name="achievement_state"
+                            context="{'group_by': 'achievement_state'}"/>
+                    <filter string="Geography" name="geo_id" context="{'group_by': 'geo_id'}"/>
+                    <filter string="Start Date" name="start_date" context="{'group_by': 'start_date'}"/>
+                    <filter string="End Date" name="end_date" context="{'group_by': 'end_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_sales_target_pivot" model="ir.ui.view">
+        <field name="name">sales.target.pivot</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="salesperson_id" type="row"/>
+                <field name="start_date" type="col"/>
+                <field name="target_amount" type="measure"/>
+                <field name="total_sales" type="measure"/>
+                <field name="difference_amount" type="measure"/>
+                <field name="achievement_progress" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_sales_target_graph" model="ir.ui.view">
+        <field name="name">sales.target.graph</field>
+        <field name="model">sales.target</field>
+        <field name="arch" type="xml">
+            <graph string="Sales Target">
+                <field name="salesperson_id" type="row"/>
+                <field name="achievement_state" type="row"/>
+                <field name="total_sales" type="measure"/>
+                <field name="target_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--    <record id="view_sales_target_search_panel" model="ir.ui.view">-->
+    <!--        <field name="name">sales.target.search.panel</field>-->
+    <!--        <field name="model">sales.target</field>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <searchpanel>-->
+    <!--                <field name="salesperson_id" filterable="true"/>-->
+    <!--                <field name="manager_id" filterable="true"/>-->
+    <!--                <field name="geo_id" filterable="true"/>-->
+    <!--                <field name="state" filterable="true"/>-->
+    <!--            </searchpanel>-->
+    <!--        </field>-->
+    <!--    </record>-->
 </odoo>
