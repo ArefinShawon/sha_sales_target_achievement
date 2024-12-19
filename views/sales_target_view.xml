@@ -148,16 +148,17 @@
         </field>
     </record>
 
-    <!--    <record id="view_sales_target_search_panel" model="ir.ui.view">-->
-    <!--        <field name="name">sales.target.search.panel</field>-->
-    <!--        <field name="model">sales.target</field>-->
-    <!--        <field name="arch" type="xml">-->
-    <!--            <searchpanel>-->
-    <!--                <field name="salesperson_id" filterable="true"/>-->
-    <!--                <field name="manager_id" filterable="true"/>-->
-    <!--                <field name="geo_id" filterable="true"/>-->
-    <!--                <field name="state" filterable="true"/>-->
-    <!--            </searchpanel>-->
-    <!--        </field>-->
-    <!--    </record>-->
+    <record id="view_sales_target_search_panel" model="ir.ui.view">
+        <field name="name">sales.target.search.panel</field>
+        <field name="model">sales.target</field>
+        <field name="inherit_id" ref="sha_sales_target_achievement.view_sales_target_search"/>
+        <field name="arch" type="xml">
+            <search position="inside">
+                <searchpanel>
+                    <field name="geo_id" enable_counters="1"/>
+                    <field name="achievement_state" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
 </odoo>
